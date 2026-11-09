@@ -3,13 +3,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 
 import 'firebase_options.dart';
+import 'app/routes/app_pages.dart';
+import 'app/routes/app_routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(const BenchMateApp());
 }
@@ -22,21 +22,15 @@ class BenchMateApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'AI BenchMate',
+
       theme: ThemeData(
         useMaterial3: true,
-        colorSchemeSeed: Colors.deepPurple,
+        colorSchemeSeed: const Color(0xFF673AB7),
+        scaffoldBackgroundColor: const Color(0xFFF8F7FC),
       ),
-      home: const Scaffold(
-        body: Center(
-          child: Text(
-            'Welcome to AI BenchMate',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
+
+      initialRoute: AppRoutes.welcome,
+      getPages: AppPages.pages,
     );
   }
 }
