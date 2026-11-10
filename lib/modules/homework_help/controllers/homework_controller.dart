@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../services/gemini_service.dart';
+import '../services/homework_api_service.dart';
 
 class HomeworkController extends GetxController {
-  final GeminiService _geminiService = GeminiService();
+  final HomeworkApiService _apiService = HomeworkApiService();
 
   final questionController = TextEditingController();
 
@@ -29,13 +29,13 @@ class HomeworkController extends GetxController {
       answer.value = '';
       errorMessage.value = '';
 
-      final response = await _geminiService.askQuestion(question);
+      final response = await _apiService.askQuestion(question);
 
       answer.value = response;
     } catch (e) {
       errorMessage.value = e.toString().replaceFirst('Exception: ', '');
 
-      debugPrint('HOMEWORK ERROR: $e');
+      debugPrint('HOMEWORK API ERROR: $e');
     } finally {
       isLoading.value = false;
     }
