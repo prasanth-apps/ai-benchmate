@@ -1,8 +1,9 @@
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, Field
 
 from app.services.ai_service import ask_ai
+from app.core.auth import get_current_user
 
 router = APIRouter()
 
@@ -15,7 +16,10 @@ class HomeworkRequest(BaseModel):
 
 
 @router.post("/ask")
-def ask_homework(request: HomeworkRequest):
+def ask_homework(
+    request: HomeworkRequest,
+    current_user: dict = Depends(get_current_user),
+):
     try:
         answer = ask_ai(request.question)
 

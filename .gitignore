@@ -53,3 +53,6 @@ backend/venv/
 backend/__pycache__/
 backend/app/**/__pycache__/
 *.pyc
+
+# Firebase Admin credentials
+backend/firebase-service-account.json

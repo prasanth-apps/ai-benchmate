@@ -1,17 +1,36 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 
 class HomeworkApiService {
-  // Android emulator connects to the Windows PC through this address.
+  //static const String baseUrl = 'https://ai-benchmate.onrender.com';
   static const String baseUrl = 'http://10.0.2.2:8000';
 
   Future<String> askQuestion(String question) async {
     try {
+      // Get the currently authenticated Firebase user.
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user == null) {
+        throw Exception('Please log in to use Homework Help.');
+      }
+
+      // Obtain the Firebase ID token.
+      final idToken = await user.getIdToken();
+
+      if (idToken == null) {
+        throw Exception('Authentication failed. Please log in again.');
+      }
+
+      // Send the question with the Firebase authentication token.
       final response = await http
           .post(
             Uri.parse('$baseUrl/api/homework/ask'),
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $idToken',
+            },
             body: jsonEncode({'question': question}),
           )
           .timeout(const Duration(seconds: 120));
@@ -20,6 +39,10 @@ class HomeworkApiService {
 
       if (response.statusCode == 200) {
         return data['answer'] as String;
+      }
+
+      if (response.statusCode == 401 || response.statusCode == 403) {
+        throw Exception('Session expired. Please log in again.');
       }
 
       if (response.statusCode == 422) {
