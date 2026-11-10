@@ -6,6 +6,7 @@ import '../../modules/authentication/views/login_screen.dart';
 import '../../modules/authentication/views/forgot_password_screen.dart';
 import '../../modules/home/views/home_screen.dart';
 
+import '../../modules/homework_help/views/homework_screen.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -15,5 +16,6 @@ class AppPages {
     GetPage(name: AppRoutes.login, page: () => LoginScreen()),
     GetPage(name: AppRoutes.forgotPassword, page: () => ForgotPasswordScreen()),
     GetPage(name: AppRoutes.home, page: () => const HomeScreen()),
+    GetPage(name: AppRoutes.homework, page: () => HomeworkScreen()),
   ];
 }

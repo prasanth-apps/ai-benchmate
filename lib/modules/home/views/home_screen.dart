@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 
+import '../../../app/routes/app_routes.dart';
 import 'widgets/feature_card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -114,7 +116,7 @@ class HomeScreen extends StatelessWidget {
                     title: 'Homework Help',
                     subtitle: 'Get help with your homework',
                     icon: Icons.menu_book_rounded,
-                    onTap: () {},
+                    onTap: () => Get.toNamed(AppRoutes.homework),
                   ),
                   FeatureCard(
                     title: 'Quick Revision',
