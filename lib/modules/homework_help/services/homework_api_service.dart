@@ -4,8 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 
 class HomeworkApiService {
-  //static const String baseUrl = 'https://ai-benchmate.onrender.com';
-  static const String baseUrl = 'http://10.0.2.2:8000';
+  static const String baseUrl = 'https://ai-benchmate.onrender.com';
 
   Future<String> askQuestion(String question) async {
     try {
@@ -47,6 +46,11 @@ class HomeworkApiService {
 
       if (response.statusCode == 422) {
         throw Exception('Please enter a question with at least 3 characters.');
+      }
+      if (response.statusCode == 429) {
+        throw Exception(
+          'You have reached your AI request limit. Please try again shortly.',
+        );
       }
 
       if (response.statusCode == 503) {
