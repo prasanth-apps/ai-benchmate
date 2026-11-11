@@ -10,10 +10,8 @@ import 'app/routes/app_routes.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Initialize Firebase App Check (Android development)
   await FirebaseAppCheck.instance.activate(
     providerAndroid: const AndroidDebugProvider(),
   );
