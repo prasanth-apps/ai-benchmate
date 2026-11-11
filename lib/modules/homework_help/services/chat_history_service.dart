@@ -65,20 +65,28 @@ class ChatHistoryService {
   }
 
   // Delete a conversation and its messages.
+
   Future<void> deleteConversation(String conversationId) async {
-    final messages = await _conversations
+    final messagesCollection = _conversations
         .doc(conversationId)
-        .collection('messages')
-        .get();
+        .collection('messages');
 
-    final batch = _firestore.batch();
+    while (true) {
+      final snapshot = await messagesCollection.limit(450).get();
 
-    for (final message in messages.docs) {
-      batch.delete(message.reference);
+      if (snapshot.docs.isEmpty) {
+        break;
+      }
+
+      final batch = _firestore.batch();
+
+      for (final message in snapshot.docs) {
+        batch.delete(message.reference);
+      }
+
+      await batch.commit();
     }
 
-    batch.delete(_conversations.doc(conversationId));
-
-    await batch.commit();
+    await _conversations.doc(conversationId).delete();
   }
 }

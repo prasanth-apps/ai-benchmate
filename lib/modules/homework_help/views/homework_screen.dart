@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/homework_controller.dart';
+import 'chat_history_screen.dart';
 
 import 'package:flutter_markdown/flutter_markdown.dart';
 
@@ -21,6 +22,15 @@ class HomeworkScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: Colors.black87,
+        actions: [
+          IconButton(
+            tooltip: 'Chat History',
+            icon: const Icon(Icons.history),
+            onPressed: () {
+              Get.to(() => ChatHistoryScreen());
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: Padding(
