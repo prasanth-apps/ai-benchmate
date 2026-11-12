@@ -24,6 +24,11 @@ class HomeworkScreen extends StatelessWidget {
         foregroundColor: Colors.black87,
         actions: [
           IconButton(
+            tooltip: 'New Chat',
+            icon: const Icon(Icons.add_comment_outlined),
+            onPressed: controller.startNewChat,
+          ),
+          IconButton(
             tooltip: 'Chat History',
             icon: const Icon(Icons.history),
             onPressed: () {

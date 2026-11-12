@@ -85,6 +85,28 @@ class HomeworkController extends GetxController {
     errorMessage.value = '';
   }
 
+  void startNewChat() {
+    if (isLoading.value) {
+      Get.snackbar(
+        'Please wait',
+        'The current question is still being processed.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    currentConversationId.value = '';
+    questionController.clear();
+    answer.value = '';
+    errorMessage.value = '';
+
+    Get.snackbar(
+      'New Chat',
+      'Started a new conversation.',
+      snackPosition: SnackPosition.BOTTOM,
+    );
+  }
+
   @override
   void onClose() {
     questionController.dispose();
