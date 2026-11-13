@@ -59,7 +59,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 8),
 
               const Text(
-                'Your student life, organized in one place.',
+                'Your personal companion for a smarter student life.',
                 style: TextStyle(fontSize: 14, color: Colors.black54),
               ),
 
@@ -76,7 +76,7 @@ class HomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'What do you want to do today?',
+                      'Everything you need for student life.',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
@@ -85,7 +85,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      'Stay focused. Stay organized. Keep learning.',
+                      'Learn smarter. Stay organized. Be prepared.',
                       style: TextStyle(color: Colors.white70, fontSize: 13),
                     ),
                   ],
@@ -113,17 +113,12 @@ class HomeScreen extends StatelessWidget {
                 childAspectRatio: 1.05,
                 children: [
                   FeatureCard(
-                    title: 'Homework Help',
-                    subtitle: 'Get help with your homework',
-                    icon: Icons.menu_book_rounded,
+                    title: 'AI Mate',
+                    subtitle: 'Learn, solve, summarise and revise with AI',
+                    icon: Icons.psychology_rounded,
                     onTap: () => Get.toNamed(AppRoutes.homework),
                   ),
-                  FeatureCard(
-                    title: 'Quick Revision',
-                    subtitle: 'Revise topics before exams',
-                    icon: Icons.psychology_rounded,
-                    onTap: () {},
-                  ),
+
                   FeatureCard(
                     title: 'Assignments',
                     subtitle: 'Manage your assignments',
@@ -134,6 +129,12 @@ class HomeScreen extends StatelessWidget {
                     title: 'Expense & Fees Tracker',
                     subtitle: 'Manage your student finances',
                     icon: Icons.account_balance_wallet_rounded,
+                    onTap: () {},
+                  ),
+                  FeatureCard(
+                    title: 'Document Vault',
+                    subtitle: 'Store and access your important documents',
+                    icon: Icons.folder_special_rounded,
                     onTap: () {},
                   ),
                 ],

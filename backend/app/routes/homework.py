@@ -1,4 +1,6 @@
 
+from typing import Literal
+
 from fastapi import APIRouter, HTTPException, Depends, status
 from pydantic import BaseModel, Field
 
@@ -9,10 +11,23 @@ from app.core.rate_limiter import check_rate_limit
 router = APIRouter()
 
 
+class ConversationMessage(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str = Field(
+        min_length=1,
+        max_length=4000,
+    )
+
+
 class HomeworkRequest(BaseModel):
     question: str = Field(
         min_length=3,
         max_length=2000,
+    )
+
+    conversation_history: list[ConversationMessage] = Field(
+        default_factory=list,
+        max_length=20,
     )
 
 
@@ -35,7 +50,16 @@ def ask_homework(
         )
 
     try:
-        answer = ask_ai(request.question)
+        # Convert previous messages into dictionaries.
+        conversation_history = [
+            message.model_dump()
+            for message in request.conversation_history
+        ]
+
+        answer = ask_ai(
+            question=request.question,
+            conversation_history=conversation_history,
+        )
 
         return {
             "question": request.question,

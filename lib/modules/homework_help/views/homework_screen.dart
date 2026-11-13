@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../controllers/homework_controller.dart';
 import 'chat_history_screen.dart';
-
-import 'package:flutter_markdown/flutter_markdown.dart';
 
 class HomeworkScreen extends StatelessWidget {
   HomeworkScreen({super.key});
@@ -12,16 +11,21 @@ class HomeworkScreen extends StatelessWidget {
   final HomeworkController controller = Get.put(HomeworkController());
 
   static const Color primaryColor = Color(0xFF673AB7);
+  static const Color backgroundColor = Color(0xFFF8F7FC);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F7FC),
+      backgroundColor: backgroundColor,
+
       appBar: AppBar(
-        title: const Text('Homework Help'),
+        title: const Text(
+          'AI Mate',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
         backgroundColor: Colors.white,
-        elevation: 0,
         foregroundColor: Colors.black87,
+        elevation: 0,
         actions: [
           IconButton(
             tooltip: 'New Chat',
@@ -37,160 +41,290 @@ class HomeworkScreen extends StatelessWidget {
           ),
         ],
       ),
+
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Ask AI anything!',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Get simple explanations for your homework questions.',
-                style: TextStyle(color: Colors.black54),
-              ),
-              const SizedBox(height: 24),
+        child: Column(
+          children: [
+            // Chat messages
+            Expanded(
+              child: Obx(() {
+                final messages = controller.messages.reversed.toList();
 
-              TextField(
-                controller: controller.questionController,
-                maxLines: 4,
-                decoration: InputDecoration(
-                  hintText: 'Type your homework question here...',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
+                if (messages.isEmpty &&
+                    !controller.isLoading.value &&
+                    controller.errorMessage.value.isEmpty) {
+                  return _buildWelcomeScreen();
+                }
 
-              const SizedBox(height: 16),
+                final showLoading = controller.isLoading.value;
+                final showError = controller.errorMessage.value.isNotEmpty;
 
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: Obx(
-                  () => ElevatedButton.icon(
-                    onPressed: controller.isLoading.value
-                        ? null
-                        : controller.askQuestion,
-                    icon: const Icon(Icons.auto_awesome),
-                    label: Text(
-                      controller.isLoading.value
-                          ? 'Generating Answer...'
-                          : 'Ask AI',
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+                return ListView.builder(
+                  reverse: true,
+                  padding: const EdgeInsets.all(16),
+                  itemCount:
+                      messages.length +
+                      (showLoading ? 1 : 0) +
+                      (showError ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    var messageIndex = index;
 
-              const SizedBox(height: 24),
+                    // Latest loading indicator
+                    if (showLoading && index == 0) {
+                      return _buildTypingIndicator();
+                    }
 
-              Expanded(
-                child: Obx(() {
-                  if (controller.isLoading.value) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+                    if (showLoading) {
+                      messageIndex--;
+                    }
 
-                  if (controller.errorMessage.value.isNotEmpty) {
-                    return Center(
-                      child: Text(
-                        controller.errorMessage.value,
-                        style: const TextStyle(color: Colors.red),
-                      ),
+                    // Latest error message
+                    if (showError && messageIndex == 0) {
+                      return _buildErrorMessage(controller.errorMessage.value);
+                    }
+
+                    if (showError) {
+                      messageIndex--;
+                    }
+
+                    final message = messages[messageIndex];
+
+                    return _buildMessageBubble(
+                      message.content,
+                      message.role == 'user',
                     );
-                  }
+                  },
+                );
+              }),
+            ),
 
-                  if (controller.answer.value.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        'Your AI answer will appear here.',
-                        style: TextStyle(color: Colors.black45),
-                      ),
-                    );
-                  }
+            // Bottom message input
+            _buildMessageInput(),
+          ],
+        ),
+      ),
+    );
+  }
 
-                  return SingleChildScrollView(
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(18),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Row(
-                            children: [
-                              Icon(Icons.auto_awesome, color: primaryColor),
-                              SizedBox(width: 8),
-                              Text(
-                                'AI Answer',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          MarkdownBody(
-                            data: controller.answer.value,
-                            selectable: true,
-                            styleSheet: MarkdownStyleSheet(
-                              p: const TextStyle(
-                                fontSize: 15,
-                                height: 1.6,
-                                color: Colors.black87,
-                              ),
-                              h1: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              h2: const TextStyle(
-                                fontSize: 21,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              h3: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              strong: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton.icon(
-                              onPressed: controller.clearQuestion,
-                              icon: const Icon(Icons.refresh),
-                              label: const Text('Ask another question'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }),
+  // Welcome screen
+  Widget _buildWelcomeScreen() {
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              height: 72,
+              width: 72,
+              decoration: BoxDecoration(
+                color: primaryColor.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
               ),
-            ],
+              child: const Icon(
+                Icons.auto_awesome,
+                color: primaryColor,
+                size: 36,
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            const Text(
+              'What would you like to learn today?',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 23,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF251442),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            const Text(
+              'Ask homework questions, understand concepts, '
+              'create revision notes, summarise chapters '
+              'or practise for exams.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 15,
+                height: 1.5,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Individual message bubble
+
+  Widget _buildMessageBubble(String content, bool isUser) {
+    if (isUser) {
+      return Align(
+        alignment: Alignment.centerRight,
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 320),
+          margin: const EdgeInsets.only(bottom: 18, left: 40),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: primaryColor,
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: SelectableText(
+            content,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              height: 1.5,
+            ),
           ),
         ),
+      );
+    }
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      child: MarkdownBody(
+        data: content,
+        selectable: true,
+        styleSheet: MarkdownStyleSheet(
+          p: const TextStyle(fontSize: 15, height: 1.7, color: Colors.black87),
+          h1: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            height: 1.5,
+          ),
+          h2: const TextStyle(
+            fontSize: 19,
+            fontWeight: FontWeight.bold,
+            height: 1.5,
+          ),
+          h3: const TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.bold,
+            height: 1.5,
+          ),
+          strong: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          listBullet: const TextStyle(fontSize: 15, height: 1.7),
+          code: const TextStyle(
+            fontSize: 13,
+            backgroundColor: Color(0xFFECE8F2),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // AI thinking indicator
+  Widget _buildTypingIndicator() {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 18,
+              width: 18,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: primaryColor,
+              ),
+            ),
+            SizedBox(width: 12),
+            Text(
+              'AI Mate is thinking...',
+              style: TextStyle(color: Colors.black54),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Error message
+  Widget _buildErrorMessage(String error) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.red.shade50,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(error, style: const TextStyle(color: Colors.red)),
+    );
+  }
+
+  // Bottom input area
+  Widget _buildMessageInput() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(top: BorderSide(color: Color(0xFFECE8F2))),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+            child: TextField(
+              controller: controller.questionController,
+              minLines: 1,
+              maxLines: 5,
+              textCapitalization: TextCapitalization.sentences,
+              onSubmitted: (_) {
+                if (!controller.isLoading.value) {
+                  controller.askQuestion();
+                }
+              },
+              decoration: InputDecoration(
+                hintText: 'Ask AI Mate anything...',
+                filled: true,
+                fillColor: backgroundColor,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 13,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(width: 8),
+
+          Obx(
+            () => IconButton(
+              onPressed: controller.isLoading.value
+                  ? null
+                  : controller.askQuestion,
+              style: IconButton.styleFrom(
+                backgroundColor: primaryColor,
+                foregroundColor: Colors.white,
+                disabledBackgroundColor: Colors.grey.shade300,
+                padding: const EdgeInsets.all(13),
+              ),
+              icon: const Icon(Icons.send_rounded),
+            ),
+          ),
+        ],
       ),
     );
   }

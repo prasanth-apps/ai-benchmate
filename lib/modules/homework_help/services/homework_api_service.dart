@@ -6,23 +6,31 @@ import 'package:http/http.dart' as http;
 class HomeworkApiService {
   static const String baseUrl = 'https://ai-benchmate.onrender.com';
 
-  Future<String> askQuestion(String question) async {
+  Future<String> askQuestion(
+    String question, {
+    List<Map<String, String>> conversationHistory = const [],
+  }) async {
     try {
-      // Get the currently authenticated Firebase user.
+      // Get the authenticated Firebase user.
       final user = FirebaseAuth.instance.currentUser;
 
       if (user == null) {
-        throw Exception('Please log in to use Homework Help.');
+        throw Exception('Please log in to use AI Mate.');
       }
 
-      // Obtain the Firebase ID token.
+      // Obtain Firebase ID token.
       final idToken = await user.getIdToken();
 
       if (idToken == null) {
         throw Exception('Authentication failed. Please log in again.');
       }
 
-      // Send the question with the Firebase authentication token.
+      // Prepare request with conversation context.
+      final requestBody = {
+        'question': question,
+        'conversation_history': conversationHistory,
+      };
+
       final response = await http
           .post(
             Uri.parse('$baseUrl/api/homework/ask'),
@@ -30,7 +38,7 @@ class HomeworkApiService {
               'Content-Type': 'application/json',
               'Authorization': 'Bearer $idToken',
             },
-            body: jsonEncode({'question': question}),
+            body: jsonEncode(requestBody),
           )
           .timeout(const Duration(seconds: 120));
 
@@ -45,8 +53,9 @@ class HomeworkApiService {
       }
 
       if (response.statusCode == 422) {
-        throw Exception('Please enter a question with at least 3 characters.');
+        throw Exception('Invalid question or conversation data.');
       }
+
       if (response.statusCode == 429) {
         throw Exception(
           'You have reached your AI request limit. Please try again shortly.',
