@@ -7,6 +7,7 @@ import '../../modules/authentication/views/forgot_password_screen.dart';
 import '../../modules/home/views/home_screen.dart';
 import '../../modules/document_vault/views/document_vault_screen.dart';
 import '../../modules/homework_help/views/homework_screen.dart';
+import '../../modules/assignments/views/assignments_screen.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -21,5 +22,6 @@ class AppPages {
       name: AppRoutes.documentVault,
       page: () => const DocumentVaultScreen(),
     ),
+    GetPage(name: AppRoutes.assignments, page: () => const AssignmentsScreen()),
   ];
 }

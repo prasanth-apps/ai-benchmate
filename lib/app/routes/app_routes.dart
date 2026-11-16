@@ -6,4 +6,5 @@ abstract class AppRoutes {
   static const home = '/home';
   static const homework = '/homework';
   static const documentVault = '/document-vault';
+  static const assignments = '/assignments';
 }

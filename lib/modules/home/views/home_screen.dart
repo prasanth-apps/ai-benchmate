@@ -123,7 +123,7 @@ class HomeScreen extends StatelessWidget {
                     title: 'Assignments',
                     subtitle: 'Manage your assignments',
                     icon: Icons.assignment_rounded,
-                    onTap: () {},
+                    onTap: () => Get.toNamed(AppRoutes.assignments),
                   ),
                   FeatureCard(
                     title: 'Expense & Fees Tracker',
