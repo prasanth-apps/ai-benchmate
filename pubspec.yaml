@@ -42,6 +42,12 @@ dependencies:
   flutter_markdown: ^0.7.7+1
   http: ^1.6.0
   cloud_firestore: ^7.1.0
+  path_provider: ^2.1.6
+  pdfx: ^2.11.0
+  share_plus: ^13.3.1
+  path: ^1.9.1
+  uuid: ^4.6.0
+  get_storage: ^2.1.1
 
 dev_dependencies:
   flutter_test:

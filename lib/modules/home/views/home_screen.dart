@@ -135,7 +135,7 @@ class HomeScreen extends StatelessWidget {
                     title: 'Document Vault',
                     subtitle: 'Store and access your important documents',
                     icon: Icons.folder_special_rounded,
-                    onTap: () {},
+                    onTap: () => Get.toNamed(AppRoutes.documentVault),
                   ),
                 ],
               ),
