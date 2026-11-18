@@ -25,46 +25,41 @@ class ForgotPasswordScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 35),
-
-                const Icon(
-                  Icons.mark_email_unread_outlined,
-                  size: 65,
-                  color: primaryColor,
-                ),
-
-                const SizedBox(height: 28),
-
-                const Text(
-                  'Forgot Password?',
-                  style: TextStyle(
-                    fontSize: 27,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF251442),
+                const Center(
+                  child: Icon(
+                    Icons.lock_reset_rounded,
+                    size: 65,
+                    color: primaryColor,
                   ),
                 ),
-
+                const SizedBox(height: 25),
+                const Center(
+                  child: Text(
+                    'Forgot Password?',
+                    style: TextStyle(
+                      fontSize: 27,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF251442),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 12),
-
                 const Text(
                   'No worries! Enter your registered email address '
                   'and we will send you a password reset link.',
+                  textAlign: TextAlign.center,
                   style: TextStyle(
+                    color: Colors.black54,
                     fontSize: 15,
                     height: 1.5,
-                    color: Colors.black54,
                   ),
                 ),
-
-                const SizedBox(height: 35),
-
+                const SizedBox(height: 40),
                 const Text(
                   'Email Address',
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
-
-                const SizedBox(height: 10),
-
+                const SizedBox(height: 8),
                 TextFormField(
                   controller: controller.emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -76,9 +71,13 @@ class ForgotPasswordScreen extends StatelessWidget {
                     ),
                     filled: true,
                     fillColor: Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 18,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: Color(0xFFE7E1EF)),
+                      borderSide: BorderSide.none,
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -104,50 +103,49 @@ class ForgotPasswordScreen extends StatelessWidget {
                     return null;
                   },
                 ),
-
                 const SizedBox(height: 28),
-
                 SizedBox(
                   width: double.infinity,
                   height: 54,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (controller.formKey.currentState!.validate()) {
-                        Get.snackbar('Success', 'Email validation successful!');
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                  child: Obx(
+                    () => ElevatedButton(
+                      onPressed: controller.isLoading.value
+                          ? null
+                          : controller.sendResetLink,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                       ),
-                    ),
-                    child: const Text(
-                      'Send Reset Link',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      child: controller.isLoading.value
+                          ? const SizedBox(
+                              height: 22,
+                              width: 22,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2.5,
+                              ),
+                            )
+                          : const Text(
+                              'Send Reset Link',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 20),
-
                 Center(
-                  child: TextButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    child: const Text(
-                      'Back to Login',
-                      style: TextStyle(
-                        color: primaryColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                  child: TextButton.icon(
+                    onPressed: () => Get.back(),
+                    icon: const Icon(Icons.arrow_back, size: 18),
+                    label: const Text('Back to Login'),
+                    style: TextButton.styleFrom(foregroundColor: primaryColor),
                   ),
                 ),
               ],

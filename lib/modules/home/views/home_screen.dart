@@ -32,7 +32,7 @@ class HomeScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () => Get.toNamed(AppRoutes.profile),
             icon: const Icon(
               Icons.account_circle_outlined,
               color: primaryColor,
