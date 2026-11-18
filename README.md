@@ -4,16 +4,26 @@
 
 AI BenchMate is a Flutter-based student productivity application designed to bring AI-powered learning assistance, document management, assignment tracking, and personal finance management into one place.
 
+The goal is to simplify everyday student activities through a single, user-friendly mobile application.
+
 ## Features
 
-### 1. AI Mate
+### 1. Authentication & Profile
+- Student registration using email and password
+- Secure login using Firebase Authentication
+- Forgot password with email reset link
+- User profile displaying account information
+- Logout functionality
+- Protected application routes for authenticated users
+
+### 2. AI Mate
 - AI-powered question answering and learning assistance
 - Context-aware conversations
 - Create new chats
 - View previous chat history
 - Firebase Authentication and Firestore-based chat history
 
-### 2. Document Vault
+### 3. Document Vault
 - Import and manage personal documents
 - Support for PDF, JPG, JPEG, and PNG
 - Organize documents by category
@@ -21,14 +31,14 @@ AI BenchMate is a Flutter-based student productivity application designed to bri
 - Preview, rename, share, and delete documents
 - Local document storage
 
-### 3. Assignments
+### 4. Assignments
 - Create and manage assignments
 - Add subject, description, due date, and priority
 - Track pending and completed assignments
 - Filter assignments by status
 - Mark assignments as completed or delete them
 
-### 4. Expense & Fees Tracker
+### 5. Expense & Fees Tracker
 - Track income and expenses
 - Maintain separate cash and bank balances
 - Record transactions by payment source
@@ -55,15 +65,19 @@ AI BenchMate is a Flutter-based student productivity application designed to bri
 
 ## Application Screenshots
 
-### Authentication and Home
+### Authentication & Profile
 
 | Entry Screen | Sign Up |
 |---|---|
 | ![Entry](screenshots/01-entry.png) | ![Sign Up](screenshots/02-signup.png) |
 
-| Login | Home Dashboard |
+| Login | Forgot Password |
 |---|---|
-| ![Login](screenshots/03-login.png) | ![Home](screenshots/04-home.png) |
+| ![Login](screenshots/03-login.png) | ![Forgot Password](screenshots/16-forgot-password.png) |
+
+| Home Dashboard | User Profile |
+|---|---|
+| ![Home](screenshots/04-home.png) | ![Profile](screenshots/17-profile.png) |
 
 ### AI Mate
 
@@ -101,9 +115,32 @@ AI BenchMate is a Flutter-based student productivity application designed to bri
 |---|
 | ![Document Preview](screenshots/15-document-preview.png) |
 
+## Architecture & Storage
+
+- **Authentication:** Firebase Authentication manages student registration, login, password recovery, and authentication state.
+- **AI Mate:** Firebase Authentication and Cloud Firestore support user-specific chat history. AI responses are served through the FastAPI backend.
+- **Document Vault:** Documents are stored locally on the device, with metadata maintained using GetStorage.
+- **Assignments:** Assignment data is persisted locally using GetStorage.
+- **Expense & Fees Tracker:** Financial records and manually maintained balances are persisted locally using GetStorage.
+
+## AI Backend
+
+The AI Mate backend is deployed at:
+
+**https://ai-benchmate.onrender.com**
+
+Backend technologies:
+- Python
+- FastAPI
+- Groq API
+- Firebase ID token verification
+
+API credentials are maintained on the backend and should not be embedded in the Flutter application.
+
 ## Getting Started
 
 ### Prerequisites
+
 - Flutter SDK
 - Dart SDK
 - Android Studio or VS Code
@@ -130,7 +167,7 @@ AI BenchMate is a Flutter-based student productivity application designed to bri
    flutter pub get
    ```
 
-4. Configure Firebase for your Android application using your Firebase project configuration.
+4. Configure Firebase for your Android application. Add the appropriate Firebase configuration files and generated FlutterFire options.
 
 5. Run the application:
 
@@ -138,32 +175,19 @@ AI BenchMate is a Flutter-based student productivity application designed to bri
    flutter run
    ```
 
-### AI Backend
+## Generate Release APK
 
-The AI Mate backend is deployed at:
-
-`https://ai-benchmate.onrender.com`
-
-The backend uses FastAPI and Groq for AI responses. API credentials are maintained on the backend and should not be embedded in the Flutter application.
-
-## Release APK
-
-The Android release APK is generated using:
+Build the Android release APK:
 
 ```bash
 flutter build apk --release
 ```
 
-Output:
+Output location:
 
-`build/app/outputs/flutter-apk/app-release.apk`
-
-## Storage and Architecture
-
-- AI Mate: Firebase Authentication and Cloud Firestore, with AI responses served through the FastAPI backend.
-- Document Vault: Documents stored locally on the device; document metadata stored using GetStorage.
-- Assignments: Local persistence using GetStorage.
-- Expense & Fees Tracker: Local persistence using GetStorage.
+```text
+build/app/outputs/flutter-apk/app-release.apk
+```
 
 ## Future Improvements
 
@@ -178,8 +202,10 @@ Output:
 
 MCA Graduate | Flutter & Mobile Application Development
 
-GitHub: https://github.com/prasanth-apps
+GitHub: [prasanth-apps](https://github.com/prasanth-apps)
+
+Project Repository: [AI BenchMate](https://github.com/prasanth-apps/ai-benchmate)
 
 ---
 
-*AI BenchMate — One app for smarter student productivity.*
+**AI BenchMate — One app for smarter student productivity.**
