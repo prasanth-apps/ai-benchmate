@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
+import '../../expense_tracker/views/expense_tracker_screen.dart';
 import '../../../app/routes/app_routes.dart';
 import 'widgets/feature_card.dart';
 
@@ -129,7 +130,7 @@ class HomeScreen extends StatelessWidget {
                     title: 'Expense & Fees Tracker',
                     subtitle: 'Manage your student finances',
                     icon: Icons.account_balance_wallet_rounded,
-                    onTap: () {},
+                    onTap: () => Get.to(() => const ExpenseTrackerScreen()),
                   ),
                   FeatureCard(
                     title: 'Document Vault',
